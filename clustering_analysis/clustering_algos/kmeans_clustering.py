@@ -20,7 +20,7 @@ def test_kmeans_clustering(kmeans, data):
 
 def run_kmeans(k, train, test=None):
     """
-    Runs k means with k clusters, using training and testing data.
+    Runs k means with k clusters, using training and testing data. Returns map of indices in training data to the cluster that it was assigned.
     """
     print("Running k means with k = " + str(k))
     kmeans = train_kmeans_clustering(k, train)

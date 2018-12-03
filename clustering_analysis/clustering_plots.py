@@ -9,13 +9,11 @@ from thex_model.data_maps import code_cat
 
 def plot_cluster_evals(cluster_classes):
     """
-    Plots cluster evaluation in horizontal bar plot. Each bar (y-axis) is a cluster, with the maximum frequency transient class noted, and the % of that class captured by the cluster being the value of the bar (x-axis). 
+    Plots cluster evaluation in horizontal bar plot. Each bar (y-axis) is a cluster with color corresponding to dominant transient class. The percent of that class captured by the cluster is the value of the bar (x-axis). 
+    :param cluster_classes: Mapping of cluster numbers to class dominance info. Comes from clustering_performance.evaluate_clusters
     """
     rcParams['figure.figsize'] = 10, 10
     default_fontsize = 12
-    print(cluster_classes)
-
-    # num_classes = len(cluster_classes)
     cluster_indices = np.arange(len(cluster_classes))
 
     accuracies = []
@@ -38,7 +36,7 @@ def plot_cluster_evals(cluster_classes):
     plt.ylabel('Cluster', fontsize=default_fontsize)
     plt.title("Transient Class Dominance and Completeness in Clusters", fontsize=16)
 
-    # Legend: create legend
+    # create legend
     unique_patches = []
     unique_classes = set()
     for index, c in enumerate(list(colors)):
