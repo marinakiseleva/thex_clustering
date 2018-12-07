@@ -7,7 +7,8 @@ def train_kmeans_clustering(k, data):
     """
     Run k-means with k clusters on train data
     """
-    kmeans = KMeans(n_clusters=k).fit(data)
+    kmeans = KMeans(n_clusters=k, init='random', n_init=40, max_iter=500,
+                    tol=1e-6, precompute_distances=True, random_state=10, copy_x=True).fit(data)
     return kmeans
 
 
@@ -24,8 +25,11 @@ def run_kmeans(k, train, test=None):
     """
     print("Running k means with k = " + str(k))
     kmeans = train_kmeans_clustering(k, train)
-    # predictions = test_kmeans_clustering(kmeans, test)
+
     cluster_map = pd.DataFrame()
+    if type(train) == np.ndarray:
+        train = pd.DataFrame(train)
+
     cluster_map['data_index'] = train.index.values
     cluster_map['cluster'] = kmeans.labels_
     return cluster_map

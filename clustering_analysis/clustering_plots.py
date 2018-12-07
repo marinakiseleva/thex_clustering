@@ -7,12 +7,12 @@ import matplotlib.patches as mpatches
 from thex_model.data_maps import code_cat
 
 
-def plot_cluster_evals(cluster_classes):
+def plot_cluster_evals(cluster_classes, plot_title=None):
     """
     Plots cluster evaluation in horizontal bar plot. Each bar (y-axis) is a cluster with color corresponding to dominant transient class. The percent of that class captured by the cluster is the value of the bar (x-axis). 
     :param cluster_classes: Mapping of cluster numbers to class dominance info. Comes from clustering_performance.evaluate_clusters
     """
-    rcParams['figure.figsize'] = 10, 10
+    rcParams['figure.figsize'] = 6, 10
     default_fontsize = 12
     cluster_indices = np.arange(len(cluster_classes))
 
@@ -34,7 +34,8 @@ def plot_cluster_evals(cluster_classes):
     plt.yticks(cluster_indices, cluster_classes.keys(), fontsize=default_fontsize)
     plt.xlabel('% of Total Class Captured by Cluster', fontsize=default_fontsize)
     plt.ylabel('Cluster', fontsize=default_fontsize)
-    plt.title("Transient Class Dominance and Completeness in Clusters", fontsize=16)
+    title = plot_title if plot_title else "Transient Class Dominance \n and Completeness in Clusters"
+    plt.title(title, fontsize=16)
 
     # create legend
     unique_patches = []
