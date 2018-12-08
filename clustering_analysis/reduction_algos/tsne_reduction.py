@@ -10,7 +10,7 @@ def get_params(tsne):
 
 
 def plot_tsne(embedding, dimensions, num_features):
-    rcParams['figure.figsize'] = 6, 10
+    rcParams['figure.figsize'] = 6, 6
     plt.scatter(embedding[:, 0], embedding[:, 1])
     plt.xlabel('x reduction')
     plt.ylabel('y reduction')

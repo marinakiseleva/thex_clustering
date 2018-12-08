@@ -4,12 +4,75 @@ import matplotlib.pyplot as plt
 from pylab import rcParams
 
 import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
 from thex_model.data_maps import code_cat
+
+
+def plot_kmeans(kmeans, reduced_data):
+    # Step size of the mesh. Decrease to increase the quality of the VQ.
+    h = .02     # point in the mesh [x_min, x_max]x[y_min, y_max].
+    # Plot the decision boundary. For that, we will assign a color to each
+    x_min, x_max = reduced_data[:, 0].min() - 1, reduced_data[:, 0].max() + 1
+    y_min, y_max = reduced_data[:, 1].min() - 1, reduced_data[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+
+    # Obtain labels for each point in mesh. Use last trained model.
+    Z = kmeans.predict(np.c_[xx.ravel(), yy.ravel()])
+
+    Z = Z.reshape(xx.shape)
+
+    # plt.plot(reduced_data[:, 0], reduced_data[:, 1], 'k.', markersize=2)
+
+    plt.imshow(Z, interpolation='nearest',
+               extent=(xx.min(), xx.max(), yy.min(), yy.max()),
+               cmap=plt.cm.Paired,
+               aspect='auto', origin='lower')
+    # Plot the centroids as a white X
+    centroids = kmeans.cluster_centers_
+    plt.scatter(centroids[:, 0], centroids[:, 1],
+                marker='x', s=169, linewidths=3,
+                color='w', zorder=10)
+    plt.show()
+
+
+def plot_2d_evals(embedding, data, unique_classes):
+    """
+    Plots 2d embedding of data, with different markers for different classes
+    Can handle up to 36 classes
+    """
+    # Marker styles and colors
+    unique_markers = [".", "+", "v", "s", "P", "p",
+                      "*", "d", "^", "<", ">", "1", "2", "3", "4", "h", "H", "o"]
+    mcount = len(unique_markers) - 1
+    colors = ["red", "blue", "green"]
+
+    # maps transient type to unique marker/color combo
+    ttype_marker = {}
+    markers = []  # for legend
+    for index, ttype_code in enumerate(data['transient_type'].unique()):
+        marker_type = unique_markers[index]
+        marker_color = colors[index % 3]
+        ttype_marker[ttype_code] = [marker_type, marker_color]
+        # Keep track of markers for legend
+        p = mlines.Line2D([], [], color=marker_color, marker=marker_type,
+                          linestyle='', markersize=10, label=code_cat[ttype_code])
+        markers.append(p)
+
+    rcParams['figure.figsize'] = 6, 6
+    x = embedding[:, 0]
+    y = embedding[:, 1]
+    for index, ttype_code in data['transient_type'].iteritems():
+        marker_type, marker_color = ttype_marker[ttype_code]
+        plt.scatter(x[index], y[index], marker=marker_type, color=marker_color)
+
+    plt.legend(handles=markers, loc='best')
+
+    plt.show()
 
 
 def plot_cluster_evals(cluster_classes, plot_title=None):
     """
-    Plots cluster evaluation in horizontal bar plot. Each bar (y-axis) is a cluster with color corresponding to dominant transient class. The percent of that class captured by the cluster is the value of the bar (x-axis). 
+    Plots cluster evaluation in horizontal bar plot. Each bar (y-axis) is a cluster with color corresponding to dominant transient class. The percent of that class captured by the cluster is the value of the bar (x-axis).
     :param cluster_classes: Mapping of cluster numbers to class dominance info. Comes from clustering_performance.evaluate_clusters
     """
     rcParams['figure.figsize'] = 6, 10

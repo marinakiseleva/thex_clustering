@@ -32,4 +32,5 @@ def run_kmeans(k, train, test=None):
 
     cluster_map['data_index'] = train.index.values
     cluster_map['cluster'] = kmeans.labels_
+
     return cluster_map

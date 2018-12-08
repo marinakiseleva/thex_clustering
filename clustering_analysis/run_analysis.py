@@ -5,9 +5,12 @@ from thex_model import data_clean
 from thex_model import data_prep
 from thex_model import data_plot
 
+from clustering_algos.kmeans_clustering import train_kmeans_clustering
 from clustering_algos.kmeans_clustering import run_kmeans
 from clustering_performance import evaluate_clusters
 from clustering_plots import plot_cluster_evals
+from clustering_plots import plot_2d_evals
+from clustering_plots import plot_kmeans
 
 from reduction_algos.tsne_reduction import run_tsne
 from reduction_algos.umap_reduction import run_umap
@@ -54,31 +57,45 @@ def run_analysis(data, unique_classes):
     #     unique_classes, cluster_map, data, plot_title="KMeans Clustering")
 
     # # TSNE ###############################
-    # reduced_cluster_map = run_kmeans(k=unique_classes, train=run_tsne(data=train_data))
-    # evaluate_clusters(unique_classes, reduced_cluster_map, data, plot_title="t-SNE Reduced Transient Class Dominance")
+    embedding = run_tsne(data=train_data)
+    reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
+    evaluate_clusters(unique_classes, reduced_cluster_map, data,
+                      plot_title="t-SNE Reduced Transient Class Dominance")
+    plot_2d_evals(embedding, data, unique_classes)
+
+    kmeans = train_kmeans_clustering(unique_classes, embedding)
+    plot_kmeans(kmeans, embedding)
 
     # UMAP ###############################
-    reduced_cluster_map = run_kmeans(k=unique_classes, train=run_umap(train_data))
-    evaluate_clusters(unique_classes, reduced_cluster_map, data,
-                      plot_title="UMAP Reduced Clustering")
+    # reduced_cluster_map = run_kmeans(k=unique_classes, train=run_umap(train_data))
+    # evaluate_clusters(unique_classes, reduced_cluster_map, data,
+    #                   plot_title="UMAP Reduced Clustering")
 
 
 def main():
     """
     Main runner of analysis. Expects data columns to filter input on. Pass in columns as space-delimited texts, like this:
     python run_analysis.py -cols PS1_gKmag PS1_rKmag PS1_iKmag PS1_zmag PS1_zKmag PS1_yKmag
+    col_name:
+        MPAJHU
+        HyperLEDA
+        NSA
+        NED_GALEX
+        NED_SDSS
+        NED_IRASE
+        AllWISE
+        GalaxyZoo
     """
     parser = argparse.ArgumentParser(description='Classify transients')
     parser.add_argument('-col_name', '--col_name', nargs='+',
-                        help='<Required> Set flag', required=False)
+                        help='Pass in string by which columns will be selected. For example: AllWISE will use all AlLWISE columns.', required=False)
     parser.add_argument('-cols', '--cols', nargs='+',
-                        help='<Required> Set flag', required=False)
+                        help='Pass in specific column names to filter on.', required=False)
     parser.add_argument('-d', '--debug', type=bool, nargs='?',
-                        const=False, help='Boolean for debugging')
+                        const=False, help='Boolean flag for debugging', required=False)
 
     args = parser.parse_args()
     df = data_init.collect_data("../data_input/THEx-catalog.v0_0_3.fits")
-    # print(list(df))
 
     # Initialize columns
     if args.col_name is None and args.cols is None:
@@ -95,6 +112,7 @@ def main():
     if args.debug:
         print("Running on cols " + str(col_list))
         print("Init data pull rows: " + str(df.shape[0]))
+
     train, unique_classes = prep_data(df, col_list, args.debug)
     if train.shape[0] == 0:
         print("No data to run on -- try adjusting columns or filters.")
@@ -105,17 +123,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    # 'NSA_SERSIC_KCORRECT_FUV', 'NSA_SERSIC_KCORRECT_NUV', 'NSA_SERSIC_KCORRECT_u', 'NSA_SERSIC_KCORRECT_g', 'NSA_SERSIC_KCORRECT_r',
-
-"""
-col_name:
-MPAJHU
-HyperLEDA
-NSA
-NED_GALEX
-NED_SDSS
-NED_IRASE
-AllWISE
-GalaxyZoo
-"""
