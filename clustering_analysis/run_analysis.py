@@ -5,13 +5,15 @@ from thex_model import data_clean
 from thex_model import data_prep
 from thex_model import data_plot
 
-from clustering_algos.kmeans_clustering import get_cluster_map
 from clustering_algos.kmeans_clustering import train_kmeans_clustering
+from clustering_algos.dbscan_clustering import init_dbscan
 from clustering_algos.kmeans_clustering import run_kmeans
+from clustering_algos.dbscan_clustering import run_dbscan
 from clustering_performance import evaluate_clusters
-from clustering_plots import plot_cluster_evals
-from clustering_plots import plot_2d_evals
 from clustering_plots import plot_kmeans
+from clustering_plots import plot_cluster_evals
+from clustering_plots import plot_cluster_classes
+from clustering_algos.clustering import get_num_clusters
 
 from reduction_algos.tsne_reduction import run_tsne
 from reduction_algos.umap_reduction import run_umap
@@ -51,30 +53,38 @@ def prep_data(df, cols, debug=False):
 
 
 def run_analysis(data, unique_classes):
+    """
+    Runs each algorithm and plots results: KMeans alone, T-SNE, UMAP, and DBSCAN
+    """
     train_data = data.drop(['transient_type'], axis=1)
+
     # KMeans ###############################
     # cluster_map = run_kmeans(k=unique_classes, train=train_data)
-    # cluster_classes = evaluate_clusters(
-    #     unique_classes, cluster_map, data, plot_title="KMeans Clustering")
+    # cluster_classes = evaluate_clusters(unique_classes, cluster_map, data)
 
     # # TSNE ###############################
-    # embedding = run_tsne(data=train_data)
-    # reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
-    # evaluate_clusters(unique_classes, reduced_cluster_map, data,
-    #                   plot_title="t-SNE Reduced Transient Class Dominance")
+    embedding = run_tsne(data=train_data)
+    reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
+    evaluate_clusters(unique_classes, reduced_cluster_map, data)
 
-    # # Plot 2D KMeans Clusters of t-SNE Reduced data
+    # Plot 2D KMeans Clusters of t-SNE Reduced data
+    kmeans = train_kmeans_clustering(unique_classes, embedding)
+    plot_kmeans(kmeans, embedding, data, unique_classes)
+
+    # UMAP ###############################
+    # embedding = run_umap(train_data)
+    # reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
+    # evaluate_clusters(unique_classes, reduced_cluster_map, data)
+    # # Plot 2D KMeans Clusters of UMAP Reduced data
     # kmeans = train_kmeans_clustering(unique_classes, embedding)
     # plot_kmeans(kmeans, embedding, data, unique_classes)
 
-    # UMAP ###############################
-    embedding = run_umap(train_data)
-    reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
-    evaluate_clusters(unique_classes, reduced_cluster_map, data,
-                      plot_title="UMAP Reduced Clustering")
-    # Plot 2D KMeans Clusters of UMAP Reduced data
-    kmeans = train_kmeans_clustering(unique_classes, embedding)
-    plot_kmeans(kmeans, embedding, data, unique_classes)
+    # DBSCAN ###############################
+    # dbscan = init_dbscan(eps=1.5, min_samples=10)
+    # cluster_map = run_dbscan(dbscan, embedding)
+    # cluster_classes = evaluate_clusters(get_num_clusters(cluster_map), cluster_map, data)
+    # plot_cluster_evals(cluster_classes, plot_title="DBSCAN Clustering")
+    # plot_cluster_classes(embedding, data, plot_title="DBSCAN Clustering")
 
 
 def main():

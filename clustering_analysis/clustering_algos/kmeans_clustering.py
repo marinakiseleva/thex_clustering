@@ -1,6 +1,5 @@
 from sklearn.cluster import KMeans
-import numpy as np
-import pandas as pd
+from clustering_algos.clustering import get_cluster_map
 
 
 def train_kmeans_clustering(k, data):
@@ -10,16 +9,6 @@ def train_kmeans_clustering(k, data):
     kmeans = KMeans(n_clusters=k, init='random', n_init=40, max_iter=500,
                     tol=1e-6, precompute_distances=True, random_state=10, copy_x=True).fit(data)
     return kmeans
-
-
-def get_cluster_map(kmeans, data):
-    cluster_map = pd.DataFrame()
-    if type(data) == np.ndarray:
-        data = pd.DataFrame(data)
-
-    cluster_map['data_index'] = data.index.values
-    cluster_map['cluster'] = kmeans.labels_
-    return cluster_map
 
 
 def test_kmeans_clustering(kmeans, data):
@@ -35,5 +24,4 @@ def run_kmeans(k, train, test=None):
     """
     print("Running k means with k = " + str(k))
     kmeans = train_kmeans_clustering(k, train)
-
     return get_cluster_map(kmeans, train)

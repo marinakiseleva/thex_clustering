@@ -20,7 +20,7 @@ def get_markers_by_class(data):
     unique_markers = [".", "+", "v", "s", "*", "d", "x", "p",
                       "^", "<", ">", "1", "2", "3", "4", "h", "H", "o", "P"]
     mcount = len(unique_markers) - 1
-    colors = ["red", "blue", "green"]
+    colors = ["red", "blue", "green", "purple", "orange"]
 
     # maps transient type to unique marker/color combo
     ttype_marker = {}
@@ -69,7 +69,7 @@ def plot_kmeans(kmeans, reduced_data, data, unique_classes):
     centroids = kmeans.cluster_centers_
     for index in range(unique_classes):
         ax.annotate(code_cat[dominant_classes[index]],
-                    (centroids[index, 0], centroids[index, 1]), color='w', zorder=10)
+                    (centroids[index, 0], centroids[index, 1]), color='black', zorder=10)
 
     # Plot data #########################
     ttype_marker, markers = get_markers_by_class(data)
@@ -143,6 +143,24 @@ def get_cluster_dominances(cluster_classes):
         accuracies.append(perc_captured)
         dominant_classes.append(cluster_classes[key][0])
     return dominant_classes, accuracies
+
+
+def plot_cluster_classes(reduced_data, data, plot_title="Clusters"):
+    fig, ax = plt.subplots()
+    ttype_marker, markers = get_markers_by_class(data)
+    rcParams['figure.figsize'] = 6, 6
+    x = reduced_data[:, 0]
+    y = reduced_data[:, 1]
+    for index, ttype_code in data['transient_type'].iteritems():
+        marker_type, marker_color = ttype_marker[ttype_code]
+        ax.scatter(x[index], y[index], marker=marker_type, color=marker_color)
+
+    plt.legend(handles=markers, loc='best')
+
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title(plot_title)
+    plt.show()
 
 
 def plot_cluster_evals(cluster_classes, plot_title=None):

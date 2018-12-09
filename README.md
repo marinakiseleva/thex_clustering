@@ -1,14 +1,16 @@
 # thex_clustering
-Clustering work for final project in INFO 521 and THEx.
+Clustering analysis for final project in INFO 521 using THEx data.
 
 
 ## Development setup
-You need to have thex_model installed:
+There are several modules that must be installed in order for this module to work. All can be pip installed except for another custom-made model for THEx: thex_model. That is available here: 
 https://github.com/marinakiseleva/thex_model
-As well as external dependencies like:
+External depenencies include:
 - numpy
 - pandas
 - matplotlib
+- umap from https://github.com/lmcinnes/umap
+- scikit-learn
 
 You also need to have the main data source on which this runs: THEx FITS data file. This can be obtained through a request as it is not available publicly yet. 
 

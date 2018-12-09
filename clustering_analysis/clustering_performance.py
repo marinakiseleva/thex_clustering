@@ -22,13 +22,16 @@ def get_max_cluster_class(cluster_num, cluster_map, data):
             ttype_freq[cur_ttype] += 1
         else:
             ttype_freq[cur_ttype] = 1
-
+    # print("cluster map *******************************************")
+    # print(cluster_map)
+    # print("ttype_freq map *******************************************")
+    # print(ttype_freq)
     max_class = max(ttype_freq, key=ttype_freq.get)
     max_count = ttype_freq[max_class]
     return max_class, max_count, ttype_freq
 
 
-def evaluate_clusters(k, cluster_map, data, plot_title=None):
+def evaluate_clusters(k, cluster_map, data):
     """
     Get most frequent class per cluster, and how much of the total class is in that cluster. Clusters with different dominant classes & high percentage of the total class signify potential special class patterns.
     :param k: Number of clusters
@@ -47,5 +50,4 @@ def evaluate_clusters(k, cluster_map, data, plot_title=None):
         perc_class = freq / class_total
         cluster_classes[cluster_num] = [int(class_num), round(perc_class, 4), freq]
 
-    # plot_cluster_evals(cluster_classes, plot_title)
     return cluster_classes
