@@ -5,6 +5,7 @@ from thex_model import data_clean
 from thex_model import data_prep
 from thex_model import data_plot
 
+from clustering_algos.kmeans_clustering import get_cluster_map
 from clustering_algos.kmeans_clustering import train_kmeans_clustering
 from clustering_algos.kmeans_clustering import run_kmeans
 from clustering_performance import evaluate_clusters
@@ -57,19 +58,23 @@ def run_analysis(data, unique_classes):
     #     unique_classes, cluster_map, data, plot_title="KMeans Clustering")
 
     # # TSNE ###############################
-    embedding = run_tsne(data=train_data)
-    reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
-    evaluate_clusters(unique_classes, reduced_cluster_map, data,
-                      plot_title="t-SNE Reduced Transient Class Dominance")
-    plot_2d_evals(embedding, data, unique_classes)
+    # embedding = run_tsne(data=train_data)
+    # reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
+    # evaluate_clusters(unique_classes, reduced_cluster_map, data,
+    #                   plot_title="t-SNE Reduced Transient Class Dominance")
 
-    kmeans = train_kmeans_clustering(unique_classes, embedding)
-    plot_kmeans(kmeans, embedding)
+    # # Plot 2D KMeans Clusters of t-SNE Reduced data
+    # kmeans = train_kmeans_clustering(unique_classes, embedding)
+    # plot_kmeans(kmeans, embedding, data, unique_classes)
 
     # UMAP ###############################
-    # reduced_cluster_map = run_kmeans(k=unique_classes, train=run_umap(train_data))
-    # evaluate_clusters(unique_classes, reduced_cluster_map, data,
-    #                   plot_title="UMAP Reduced Clustering")
+    embedding = run_umap(train_data)
+    reduced_cluster_map = run_kmeans(k=unique_classes, train=embedding)
+    evaluate_clusters(unique_classes, reduced_cluster_map, data,
+                      plot_title="UMAP Reduced Clustering")
+    # Plot 2D KMeans Clusters of UMAP Reduced data
+    kmeans = train_kmeans_clustering(unique_classes, embedding)
+    plot_kmeans(kmeans, embedding, data, unique_classes)
 
 
 def main():

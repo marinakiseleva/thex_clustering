@@ -2,7 +2,7 @@ import math
 import numpy as np
 from thex_model import data_plot
 from thex_model.data_maps import code_cat, cat_code
-from clustering_plots import plot_cluster_evals
+# from clustering_plots import plot_cluster_evals
 
 
 def get_max_cluster_class(cluster_num, cluster_map, data):
@@ -28,13 +28,13 @@ def get_max_cluster_class(cluster_num, cluster_map, data):
     return max_class, max_count, ttype_freq
 
 
-def evaluate_clusters(k, cluster_map, data, plot_title):
+def evaluate_clusters(k, cluster_map, data, plot_title=None):
     """
     Get most frequent class per cluster, and how much of the total class is in that cluster. Clusters with different dominant classes & high percentage of the total class signify potential special class patterns.
     :param k: Number of clusters
     :param cluster_map: dataframe of data_index and cluster number
     :param data: corresponding dataframe of data
-    :return cluster_classes: Map of clusters (numbers) to the value and count of the most frequent class, and its percentage of total in this cluster
+    :return cluster_classes: Map of clusters (numbers) to the value, percentage, and count of the most frequent class
     """
     # get map of transient classes to frequency
     map_counts = data_plot.map_counts_types(data)
@@ -43,16 +43,9 @@ def evaluate_clusters(k, cluster_map, data, plot_title):
     for cluster_num in range(0, k):
         class_num, freq, ttype_freq = get_max_cluster_class(
             cluster_num, cluster_map, data)
-        # if code_cat[class_num] == "II":
-        #     # Get percent of type II P here to see what sort of overlap we have.
-        #     iip_code = cat_code['II P']
-        #     iip_frequency = ttype_freq[iip_code]
-        #     print(iip_code)
-        #     print("Frequency of II P in II cluster number " +
-        #           str(cluster_num) + " is " + str(iip_frequency))
         class_total = map_counts[class_num]
         perc_class = freq / class_total
         cluster_classes[cluster_num] = [int(class_num), round(perc_class, 4), freq]
 
-    plot_cluster_evals(cluster_classes, plot_title)
+    # plot_cluster_evals(cluster_classes, plot_title)
     return cluster_classes

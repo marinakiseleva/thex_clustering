@@ -12,6 +12,16 @@ def train_kmeans_clustering(k, data):
     return kmeans
 
 
+def get_cluster_map(kmeans, data):
+    cluster_map = pd.DataFrame()
+    if type(data) == np.ndarray:
+        data = pd.DataFrame(data)
+
+    cluster_map['data_index'] = data.index.values
+    cluster_map['cluster'] = kmeans.labels_
+    return cluster_map
+
+
 def test_kmeans_clustering(kmeans, data):
     """
     Tests kmeans algorithm with test data
@@ -26,11 +36,4 @@ def run_kmeans(k, train, test=None):
     print("Running k means with k = " + str(k))
     kmeans = train_kmeans_clustering(k, train)
 
-    cluster_map = pd.DataFrame()
-    if type(train) == np.ndarray:
-        train = pd.DataFrame(train)
-
-    cluster_map['data_index'] = train.index.values
-    cluster_map['cluster'] = kmeans.labels_
-
-    return cluster_map
+    return get_cluster_map(kmeans, train)
