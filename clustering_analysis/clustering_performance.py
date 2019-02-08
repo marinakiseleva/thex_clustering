@@ -1,7 +1,7 @@
 import math
 import numpy as np
-from thex_model import data_plot
-from thex_model.data_maps import code_cat, cat_code
+from thex_data import data_plot
+from thex_data.data_consts import code_cat, cat_code, TARGET_LABEL
 # from clustering_plots import plot_cluster_evals
 
 
@@ -17,15 +17,15 @@ def get_max_cluster_class(cluster_num, cluster_map, data):
     indices = list(cluster_data.data_index)
     ttype_freq = {}  # Map transient class code to frequency in cluster
     for i in indices:
-        cur_ttype = data.loc[i].transient_type
+        cur_ttype = data.loc[i][TARGET_LABEL]
         if cur_ttype in ttype_freq:
             ttype_freq[cur_ttype] += 1
         else:
             ttype_freq[cur_ttype] = 1
-    # print("cluster map *******************************************")
-    # print(cluster_map)
-    # print("ttype_freq map *******************************************")
-    # print(ttype_freq)
+    print("cluster map *******************************************")
+    print(cluster_map)
+    print("ttype_freq map *******************************************")
+    print(ttype_freq)
     max_class = max(ttype_freq, key=ttype_freq.get)
     max_count = ttype_freq[max_class]
     return max_class, max_count, ttype_freq

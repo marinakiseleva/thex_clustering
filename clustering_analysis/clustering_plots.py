@@ -6,7 +6,7 @@ import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 from matplotlib.colors import ListedColormap
 
-from thex_model.data_maps import code_cat
+from thex_data.data_consts import code_cat
 
 from clustering_algos.kmeans_clustering import get_cluster_map
 from clustering_performance import evaluate_clusters
