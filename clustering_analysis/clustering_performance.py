@@ -22,10 +22,6 @@ def get_max_cluster_class(cluster_num, cluster_map, data):
             ttype_freq[cur_ttype] += 1
         else:
             ttype_freq[cur_ttype] = 1
-    print("cluster map *******************************************")
-    print(cluster_map)
-    print("ttype_freq map *******************************************")
-    print(ttype_freq)
     max_class = max(ttype_freq, key=ttype_freq.get)
     max_count = ttype_freq[max_class]
     return max_class, max_count, ttype_freq

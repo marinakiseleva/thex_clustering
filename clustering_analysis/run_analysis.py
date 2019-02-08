@@ -40,7 +40,6 @@ def run_analysis(data, unique_classes):
     Runs each algorithm and plots results: KMeans alone, T-SNE, UMAP, and DBSCAN
     """
     train_data = data.drop([TARGET_LABEL], axis=1)
-    print(list(data))
     # KMeans ###############################
     cluster_map = run_kmeans(k=unique_classes, train=train_data)
     cluster_classes = evaluate_clusters(unique_classes, cluster_map, data)
